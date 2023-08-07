@@ -9,14 +9,21 @@ const { createCoreController } = require("@strapi/strapi").factories;
 module.exports = createCoreController("api::content.content", ({ strapi }) => ({
   async randomPosts(ctx) {
     try {
-      const { cate } = ctx.query;
+      const { idCate } = ctx.query;
 
       //  id cate http://url?cate=id
-
-      const allPosts = await strapi
-        .service("api::content.content")
-        .find({}, []);
-      const randomPosts = shuffleArray(allPosts?.results).slice(0, 10);
+      const allPosts = await strapi.entityService.findMany(
+        "api::content.content",
+        {
+          filters: {
+            categories: {
+              id: idCate,
+            },
+          },
+          ...ctx.query,
+        }
+      );
+      const randomPosts = shuffleArray(allPosts).slice(0, 10);
 
       const { pagination } = allPosts;
 
