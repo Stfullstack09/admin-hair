@@ -20,17 +20,20 @@ module.exports = createCoreController("api::content.content", ({ strapi }) => ({
               id: idCate,
             },
           },
+          limit: -1,
           ...ctx.query,
         }
       );
-      const randomPosts = shuffleArray(allPosts).slice(0, 10);
 
-      const { pagination } = allPosts;
+      let randomPosts = null;
+
+      if (allPosts) {
+        randomPosts = allPosts[Math.floor(Math.random() * allPosts.length)];
+      }
 
       ctx.body = {
         errCode: "Thanh Cong",
         data: randomPosts,
-        pagination,
       };
     } catch (error) {
       console.error(error);
@@ -38,20 +41,3 @@ module.exports = createCoreController("api::content.content", ({ strapi }) => ({
     }
   },
 }));
-
-function shuffleArray(array) {
-  let currentIndex = array.length,
-    randomIndex,
-    temporaryValue;
-
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
